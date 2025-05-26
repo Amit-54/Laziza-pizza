@@ -1,0 +1,34 @@
+[
+  {
+    "id": 1748165749689,
+    "name": "Amit",
+    "description": "Bhil",
+    "price": 99,
+    "image": "https://static.vecteezy.com/system/resources/previews/029/160/372/large_2x/tasty-top-view-pizza-italian-traditional-round-pizza-on-white-background-ai-generative-free-photo.jpg",
+    "category": "Main Courses"
+  },
+  {
+    "id": 1748166106191,
+    "name": "Burger",
+    "description": "Burger",
+    "price": 99,
+    "image": "https://files.catbox.moe/ef69y8.jpeg",
+    "category": "Starters"
+  },
+  {
+    "id": 1748166253975,
+    "name": "Drink",
+    "description": "Drink",
+    "price": 99,
+    "image": "https://files.catbox.moe/9x4lhq.jpeg",
+    "category": "Desserts"
+  },
+  {
+    "id": 1748166269882,
+    "name": "Other",
+    "description": "Other",
+    "price": 799,
+    "image": "https://files.catbox.moe/lzt52y.jpeg",
+    "category": "Drinks"
+  }
+]

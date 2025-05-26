@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laziz pizza| Modern Dining</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Modern Color Palette */
+        :root {
+            --primary: #e76f51;
+            --primary-dark: #d45a3b;
+            --secondary: #2a9d8f;
+            --dark: #264653;
+            --light: #f8f9fa;
+            --accent: #e9c46a;
+            --text: #333333;
+            --text-light: #6c757d;
+            --white: #ffffff;
+            --gray: #e9ecef;
+        }
+        
+        /* Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            background-color: var(--light);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px 0;
+        }
+        
+        /* Modern Button Styles */
+        .btn {
+            display: inline-block;
+            background-color: var(--primary);
+            color: var(--white);
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--white);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark);
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--primary);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 25px;
+        }
+        
+        nav ul li a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            position: relative;
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: -4px;
+            left: 0;
+            background-color: var(--primary);
+            transition: width 0.3s;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                        url('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-size: cover;
+            background-position: center;
+            height: 70vh;
+            min-height: 500px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 60px;
+        }
+        
+        .hero-content {
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+        
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+        }
+        
+        /* Section Titles */
+        .section-title {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--dark);
+            display: inline-block;
+            position: relative;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary);
+            margin: 15px auto 0;
+        }
+        
+        /* Menu Categories */
+        .menu-categories {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .category-btn {
+            background: none;
+            border: 2px solid var(--gray);
+            padding: 8px 20px;
+            cursor: pointer;
+            font-size: 1rem;
+            color: var(--text-light);
+            transition: all 0.3s;
+            border-radius: 50px;
+            font-weight: 500;
+        }
+        
+        .category-btn.active, 
+        .category-btn:hover {
+            color: var(--primary);
+            border-color: var(--primary);
+            background-color: rgba(231, 111, 81, 0.1);
+        }
+        
+        /* Menu Grid */
+        .menu-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+        
+        .menu-item {
+            background-color: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .menu-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .menu-item-img {
+            height: 200px;
+            width: 100%;
+            object-fit: cover;
+        }
+        
+        .menu-item-content {
+            padding: 20px;
+        }
+        
+        .menu-item-title {
+            font-size: 1.3rem;
+            margin-bottom: 10px;
+            color: var(--dark);
+        }
+        
+        .menu-item-desc {
+            color: var(--text-light);
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+        
+        .menu-item-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .menu-item-price {
+            font-weight: 600;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+        
+        .qty-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .qty-controls button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .qty-display {
+            font-weight: 600;
+            min-width: 24px;
+            text-align: center;
+        }
+        
+        /* Order Section */
+        .order-section {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 60px;
+        }
+        
+        .order-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid var(--gray);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(231, 111, 81, 0.2);
+        }
+        
+        textarea.form-control {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .order-summary {
+            background-color: var(--light);
+            padding: 25px;
+            border-radius: 8px;
+            border: 1px solid var(--gray);
+        }
+        
+        .order-summary-title {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            color: var(--dark);
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .order-items {
+            margin-bottom: 20px;
+        }
+        
+        .order-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--gray);
+        }
+        
+        .order-item-name {
+            font-weight: 500;
+        }
+        
+        .order-item-price {
+            color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 1.2rem;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 1px solid var(--gray);
+        }
+        
+        /* Track Order Section */
+        .track-order {
+            background-color: var(--white);
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        .track-order-form {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+        
+        .order-status {
+            margin-top: 40px;
+            padding: 30px;
+            background-color: var(--light);
+            border-radius: 8px;
+            border: 1px solid var(--gray);
+            display: none;
+        }
+        
+        .status-steps {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    margin: 40px 0;
+    flex-wrap: wrap; /* allows wrapping on small screens */
+    gap: 15px;
+}
+
+.status-steps::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--gray);
+    z-index: 1;
+}
+
+.status-step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    z-index: 2;
+    width: 70px; /* ensures labels don't squeeze too tightly */
+    text-align: center;
+}
+
+/* Optional: improve layout on narrow screens */
+@media (max-width: 500px) {
+    .status-steps {
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        justify-content: flex-start;
+    }
+
+    .status-step {
+        flex: 0 0 auto;
+        margin-right: 20px;
+    }
+}
+
+        
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+            color: var(--text-light);
+            font-weight: bold;
+            transition: all 0.3s;
+        }
+        
+        .step-icon.active {
+            background-color: var(--primary);
+            color: var(--white);
+            transform: scale(1.1);
+        }
+        
+        .step-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            transition: all 0.3s;
+        }
+        
+        .step-label.active {
+            color: var(--dark);
+            font-weight: 500;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: var(--white);
+            padding: 40px 0;
+            text-align: center;
+        }
+        
+        .footer-content p {
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        
+        .footer-content p:first-child {
+            font-size: 1.2rem;
+            margin-bottom: 15px;
+            opacity: 1;
+        }
+        
+        /* Popup Styles */
+        #popupBox {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .popup-content {
+            background-color: var(--white);
+            padding: 30px;
+            border-radius: 12px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+        }
+        
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+            color: var(--primary);
+            cursor: pointer;
+        }
+        
+        .copy-btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 50px;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .copy-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        
+        /* Alert Styles */
+        .alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            padding: 12px 24px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            z-index: 1000;
+            animation: fadeIn 0.3s;
+        }
+        
+        .alert.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .alert.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translate(-50%, -20px); }
+            to { opacity: 1; transform: translate(-50%, 0); }
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 20px;
+                justify-content: center;
+            }
+            
+            nav ul li {
+                margin: 0 10px;
+            }
+            
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            
+            .order-form {
+                grid-template-columns: 1fr;
+            }
+            
+            .menu-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+            
+            .hero-content p {
+                font-size: 1rem;
+            }
+            
+            .btn {
+                padding: 10px 20px;
+            }
+            
+            .menu-categories {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .category-btn {
+                width: 100%;
+                max-width: 200px;
+                margin-bottom: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-content">
+            <a href="https://static.vecteezy.com/system/resources/previews/029/160/372/large_2x/tasty-top-view-pizza-italian-traditional-round-pizza-on-white-background-ai-generative-free-photo.jpg" class="logo">Laziz<span>pizza</span></a>
+            <nav>
+                <ul>
+                    <li><a href="#menu">Menu</a></li>
+                    <li><a href="#order">Order</a></li>
+                    <li><a href="#track">Track</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Artisanal Dining Experience</h1>
+            <p>Discover our chef's selection of seasonal dishes crafted with locally-sourced ingredients</p>
+            <a href="#menu" class="btn">Explore Menu</a>
+        </div>
+    </section>
+
+    <!-- Menu Section -->
+    <section id="menu" class="container">
+        <div class="section-title">
+            <h2>Our Menu</h2>
+        </div>
+        
+        <div class="menu-categories">
+            <button class="category-btn active" data-category="all">All Items</button>
+            <button class="category-btn" data-category="Starters">Burger</button>
+            <button class="category-btn" data-category="Main Courses">Pizza</button>
+            <button class="category-btn" data-category="Desserts">Drinks & Desserts</button>
+            <button class="category-btn" data-category="Drinks">Other</button>
+        </div>
+        
+        <div class="menu-grid" id="menuContainer">
+            <!-- Menu items will be populated by JavaScript -->
+        </div>
+    </section>
+
+    <!-- Order Section -->
+    <section id="order" class="container">
+        <div class="section-title">
+            <h2>Place Your Order</h2>
+        </div>
+        
+        <div class="order-section">
+            <form id="orderForm" class="order-form">
+                <div class="order-details">
+                    <div class="form-group">
+                        <label for="tableNumber">Table Number</label>
+                        <select id="tableNumber" class="form-control" required>
+                            <option value="" disabled selected>Select your table</option>
+                            <option value="1">Table 1</option>
+                            <option value="2">Table 2</option>
+                            <option value="3">Table 3</option>
+                            <option value="4">Table 4</option>
+                            <option value="5">Table 5</option>
+                            <option value="takeaway">Takeaway</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="customerName">Your Name</label>
+                        <input type="text" id="customerName" class="form-control" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="specialRequest">Special Requests</label>
+                        <textarea id="specialRequest" class="form-control" placeholder="Additional Charges Applied!  dietary restrictions, or special instructions..."></textarea>
+                    </div>
+                </div>
+                
+                <div class="order-summary">
+                    <h3 class="order-summary-title">Your Order</h3>
+                    <div class="order-items" id="orderList">
+                        <p class="empty-order">No items added yet. Select items from the menu.</p>
+                    </div>
+                    <div class="order-total">
+                        <span>Total:</span>
+                        <span id="orderTotal">₹0.00</span>
+                    </div>
+                    <button type="button" class="btn" style="width: 100%; margin-top: 20px;" onclick="placeOrder()">Place Order</button>
+                </div>
+            </form>
+        </div>
+    </section>
+
+    <!-- Track Order Section -->
+<section id="track" class="container">
+    <div class="section-title">
+        <h2>Track Your Order</h2>
+    </div>
+    
+    <div class="track-order">
+        <form id="trackOrderForm" class="track-order-form">
+            <div class="form-group">
+                <label for="orderIdInput">Enter Your Order ID</label>
+                <input type="text" id="orderIdInput" class="form-control" placeholder="e.g. SB-123456" required>
+            </div>
+            <button type="button" class="btn" onclick="trackOrder()">Track Order</button>
+        </form>
+        
+        <div class="order-status" id="orderStatus">
+            <h3>Order Status</h3>
+            <p><strong>Customer Name:</strong> <span id="trackCustomerName">--</span></p>
+            <p><strong>Table No:</strong> <span id="trackTableNumber">--</span></p>
+            <p><strong>Items:</strong> <span id="trackItems">--</span></p>
+            <p><strong>Total:</strong> ₹<span id="trackTotal">--</span></p>
+            <p><strong>Status:</strong> <span id="statusMessage">--</span></p>
+            
+            <div class="status-steps">
+                <div class="status-step">
+                    <div class="step-icon" id="step1">1</div>
+                    <div class="step-label" id="label1">Order Placed</div>
+                </div>
+                <div class="status-step">
+                    <div class="step-icon" id="step2">2</div>
+                    <div class="step-label" id="label2">Preparing</div>
+                </div>
+                <div class="status-step">
+                    <div class="step-icon" id="step3">3</div>
+                    <div class="step-label" id="label3">Ready</div>
+                </div>
+                <div class="status-step">
+                    <div class="step-icon" id="step4">4</div>
+                    <div class="step-label" id="label4">Served</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+    <!-- Footer -->
+    <footer id="contact">
+        <div class="container footer-content">
+            <p>Laziz pizza</p>
+            <p>123 Gourmet Avenue, Foodie City</p>
+            <p>Phone: </p>
+            <p>Open: Tuesday-Sunday, 11:30AM - 10:00PM</p>
+        </div>
+    </footer>
+
+    <!-- Popup Box -->
+    <div id="popupBox" class="popup flex">
+        <div class="popup-content">
+            <span class="close" onclick="closePopup()">&times;</span>
+            <div id="popupMessage"></div>
+            <button class="copy-btn" onclick="copyOrderId()">Copy Order ID</button>
+        </div>
+    </div>
+
+    <script>
+        let order = {};
+
+        // Load menu and render
+        function loadMenu() {
+            fetch('/api/menu')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(menu => {
+                    renderMenu(menu);
+                    setupEventListeners();
+                })
+                .catch(error => {
+                    console.error('Error loading menu:', error);
+                    showAlert('Failed to load menu. Please try again later.', 'error');
+                });
+        }
+
+        function renderMenu(menu) {
+            const menuContainer = document.getElementById('menuContainer');
+            menuContainer.innerHTML = '';
+            
+            menu.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'menu-item';
+                div.innerHTML = `
+                    <img src="${item.image}" alt="${item.name}" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <h3 class="menu-item-title">${item.name}</h3>
+                        <p class="menu-item-desc">${item.description}</p>
+                        <div class="menu-item-footer">
+                            <span class="menu-item-price">₹${item.price.toFixed(2)}</span>
+                            <div class="qty-controls">
+                                <button onclick="changeQty(${item.id}, -1)">-</button>
+                                <div class="qty-display" id="qty-${item.id}">0</div>
+                                <button onclick="changeQty(${item.id}, 1)">+</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                menuContainer.appendChild(div);
+            });
+        }
+
+        function changeQty(id, delta) {
+            if (!order[id]) order[id] = 0;
+            order[id] += delta;
+            if (order[id] < 0) order[id] = 0;
+            document.getElementById(`qty-${id}`).textContent = order[id];
+            updateOrderList();
+        }
+
+        function updateOrderList() {
+            fetch('/api/menu')
+                .then(res => res.json())
+                .then(menu => {
+                    const orderList = document.getElementById('orderList');
+                    const orderTotal = document.getElementById('orderTotal');
+                    
+                    if (!Object.values(order).some(qty => qty > 0)) {
+                        orderList.innerHTML = '<p class="empty-order">No items added yet. Select items from the menu.</p>';
+                        orderTotal.textContent = '₹0.00';
+                        return;
+                    }
+                    
+                    let html = '';
+                    let total = 0;
+                    
+                    Object.entries(order).forEach(([id, qty]) => {
+                        if (qty > 0) {
+                            const item = menu.find(i => i.id == id);
+                            if (item) {
+                                const itemTotal = item.price * qty;
+                                html += `
+                                    <div class="order-item">
+                                        <div class="order-item-name">${item.name} x ${qty}</div>
+                                        <div class="order-item-price">₹${itemTotal.toFixed(2)}</div>
+                                    </div>
+                                `;
+                                total += itemTotal;
+                            }
+                        }
+                    });
+                    
+                    orderList.innerHTML = html;
+                    orderTotal.textContent = `₹${total.toFixed(2)}`;
+                });
+        }
+
+        function placeOrder() {
+            const name = document.getElementById('customerName').value.trim();
+            const table = document.getElementById('tableNumber').value.trim();
+            const request = document.getElementById('specialRequest').value.trim();
+
+            if (!name || !table) {
+                showAlert('Please enter your name and table number', 'error');
+                return;
+            }
+
+            fetch('/api/menu')
+                .then(res => res.json())
+                .then(menu => {
+                    const items = [];
+                    let total = 0;
+
+                    Object.entries(order).forEach(([id, qty]) => {
+                        if (qty > 0) {
+                            const item = menu.find(i => i.id == id);
+                            if (item) {
+                                total += item.price * qty;
+                                items.push({
+                                    id: item.id,
+                                    name: item.name,
+                                    price: item.price,
+                                    quantity: qty
+                                });
+                            }
+                        }
+                    });
+
+                    if (items.length === 0) {
+                        showAlert('Please add items to your order first', 'error');
+                        return;
+                    }
+
+                    const orderData = {
+                        customerName: name,
+                        tableNumber: table,
+                        specialRequest: request,
+                        items,
+                        total,
+                        status: 1
+                    };
+
+                    fetch('/api/orders', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(orderData)
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.success) {
+                            showPopup(`Order placed successfully!<br><br>Order ID: <strong>${data.orderId}</strong><br>Total: <strong>₹${total.toFixed(2)}</strong>`);
+                            document.querySelector('.copy-btn').setAttribute('data-order-id', data.orderId);
+                            resetOrder();
+                        } else {
+                            throw new Error('Failed to place order');
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Error placing order:', err);
+                        showAlert('Failed to place order. Please try again.', 'error');
+                    });
+                });
+        }
+
+        function trackOrder() {
+    const orderId = document.getElementById('orderIdInput').value.trim();
+    if (!orderId) {
+        showAlert('Please enter an order ID', 'error');
+        return;
+    }
+
+    fetch(`/api/orders/${orderId}`)
+        .then(res => res.json())
+        .then(order => {
+            if (!order || order.error) {
+                showAlert('Order not found. Please check your Order ID.', 'error');
+                return;
+            }
+
+            // Update status visualization
+            for (let i = 1; i <= 4; i++) {
+                const step = document.getElementById(`step${i}`);
+                const label = document.getElementById(`label${i}`);
+                if (i <= order.status) {
+                    step.classList.add('active');
+                    label.classList.add('active');
+                } else {
+                    step.classList.remove('active');
+                    label.classList.remove('active');
+                }
+            }
+
+            // Set status message
+            const statusMap = {
+  "Pending": "Order Placed.",
+  "Preparing": "Preparing.",
+  "Ready": "Ready.",
+  "Completed": "Served."
+};
+
+document.getElementById('statusMessage').textContent = statusMap[order.status] || "--";
+            document.getElementById("trackCustomerName").textContent = order.customerName || "--";
+            document.getElementById("trackTableNumber").textContent = order.tableNumber || "--";
+
+            const itemsText = order.items && order.items.length > 0
+                ? order.items.map(i => `${i.name} x ${i.quantity}`).join(", ")
+                : "--";
+
+            document.getElementById("trackItems").textContent = itemsText;
+            document.getElementById("trackTotal").textContent = order.total?.toFixed(2) || "--";
+;
+            document.getElementById('orderStatus').style.display = 'block';
+        })
+        .catch(err => {
+            console.error('Error tracking order:', err);
+            showAlert('Failed to track order. Please try again.', 'error');
+        });
+}
+        function resetOrder() {
+            order = {};
+            document.querySelectorAll('.qty-display').forEach(el => el.textContent = '0');
+            document.getElementById('customerName').value = '';
+            document.getElementById('tableNumber').value = '';
+            document.getElementById('specialRequest').value = '';
+            updateOrderList();
+        }
+
+        function showPopup(message) {
+            document.getElementById('popupMessage').innerHTML = message;
+            document.getElementById('popupBox').style.display = 'flex';
+        }
+
+        function closePopup() {
+            document.getElementById('popupBox').style.display = 'none';
+        }
+
+        function copyOrderId() {
+            const orderId = document.querySelector('.copy-btn').getAttribute('data-order-id');
+            navigator.clipboard.writeText(orderId).then(() => {
+                showAlert('Order ID copied to clipboard!', 'success');
+            }).catch(() => {
+                showAlert('Failed to copy Order ID', 'error');
+            });
+        }
+
+        function showAlert(message, type = 'error') {
+            const alert = document.createElement('div');
+            alert.className = `alert ${type}`;
+            alert.textContent = message;
+            document.body.appendChild(alert);
+            
+            setTimeout(() => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            }, 3000);
+        }
+
+        function setupEventListeners() {
+            // Category buttons
+            document.querySelectorAll('.category-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.category-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    const category = this.dataset.category;
+                    filterMenu(category);
+                });
+            });
+        }
+
+        function filterMenu(category) {
+            fetch('/api/menu')
+                .then(res => res.json())
+                .then(menu => {
+                    const filtered = category === 'all' ? 
+                        menu : menu.filter(item => item.category === category);
+                    renderMenu(filtered);
+                });
+        }
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', loadMenu);
+    </script>
+</body>
+</html>
