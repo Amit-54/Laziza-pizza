@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Menu Control Panel</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f8f9fa;
+      margin: 0 auto;
+      padding: 20px;
+      max-width: 800px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .menu-item, .add-new {
+      background: white;
+      border-radius: 10px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+      padding: 15px;
+      margin-bottom: 20px;
+    }
+    .menu-item img {
+      max-width: 100px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      display: block;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 8px;
+      margin: 6px 0;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+    button {
+      padding: 8px 16px;
+      margin: 10px 10px 0 0;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    .btn-delete {
+      background: #e74c3c;
+      color: white;
+    }
+    .btn-save {
+      background: #27ae60;
+      color: white;
+    }
+    .btn-add {
+      background: #2980b9;
+      color: white;
+    }
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      color: green;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>🍽 Menu Editor</h1>
+  <div id="menuContainer" style="display:none;"></div>
+
+  <div class="add-new" style="display:none;" id="addNewItemBlock">
+    <h3>Add New Item</h3>
+    <input type="text" id="newName" placeholder="Item Name" />
+    <textarea id="newDescription" placeholder="Description"></textarea>
+    <input type="number" id="newPrice" placeholder="Price" step="0.01" min="0" />
+    <input type="text" id="newImage" placeholder="Image URL" oninput="previewNewImage()" />
+    <select id="newCategory">
+      <option value="">Select Category</option>
+      <option value="Starters">🍔 Burger</option>
+      <option value="Main Courses">🍕 Pizza</option>
+      <option value="Desserts">🍧 Drinks & Desserts</option>
+      <option value="Drinks">🍟 Other</option>
+    </select>
+    <img id="newImagePreview" src="" style="display:none;" />
+    <button class="btn-add" onclick="addNewItem()">Add Item</button>
+  </div>
+
+  <button class="btn-save" onclick="saveMenu()" style="display:none;" id="saveButton">💾 Save All Changes</button>
+  <div class="message" id="saveMsg"></div>
+
+  <!-- 🔐 Password Overlay -->
+  <div id="authOverlay" style="
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  ">
+    <h2>🔐 Admin Access</h2>
+    <input type="password" id="authPassword" placeholder="Enter password" style="padding: 10px; font-size: 16px; border-radius: 6px; margin-top: 10px;" />
+    <button onclick="checkPassword()" style="margin-top: 10px; padding: 8px 16px; font-weight: bold; background: #2980b9; color: white; border: none; border-radius: 6px;">Unlock</button>
+    <p id="authError" style="color: red; margin-top: 10px;"></p>
+  </div>
+
+  <script>
+    const PASSWORD_HASH = "3cd8705d192e04fa2f20eca60dcf68a3823caeac0b1c7e06ce055ef92a0f0ba3"; // laziz@pizza
+    let menu = [];
+
+    async function checkPassword() {
+      const input = document.getElementById('authPassword').value;
+      const encoder = new TextEncoder();
+      const data = encoder.encode(input);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      if (hashHex === PASSWORD_HASH) {
+        document.getElementById('authOverlay').style.display = 'none';
+        document.getElementById('menuContainer').style.display = 'block';
+        document.getElementById('addNewItemBlock').style.display = 'block';
+        document.getElementById('saveButton').style.display = 'inline-block';
+        fetchMenu();
+      } else {
+        document.getElementById('authError').innerText = 'Incorrect password.';
+      }
+    }
+
+    async function fetchMenu() {
+      try {
+        const res = await fetch('/api/menu');
+        menu = await res.json();
+        renderMenu();
+      } catch (e) {
+        alert('Failed to load menu.');
+        console.error(e);
+      }
+    }
+
+    function renderMenu() {
+      const container = document.getElementById('menuContainer');
+      container.innerHTML = '';
+      menu.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.className = 'menu-item';
+
+        div.innerHTML = `
+          <img src="${escapeHtml(item.image)}" alt="Preview">
+          <input type="text" value="${escapeHtml(item.name)}" placeholder="Name" onchange="updateMenu(${index}, 'name', this.value)" />
+          <textarea placeholder="Description" onchange="updateMenu(${index}, 'description', this.value)">${escapeHtml(item.description)}</textarea>
+          <input type="number" value="${item.price}" step="0.01" min="0" placeholder="Price" onchange="updateMenu(${index}, 'price', parseFloat(this.value) || 0)" />
+          <input type="text" value="${escapeHtml(item.image)}" placeholder="Image URL" onchange="updateMenu(${index}, 'image', this.value)" />
+          <select onchange="updateMenu(${index}, 'category', this.value)">
+            <option value="">Select Category</option>
+            <option value="Starters" ${item.category === 'Starters' ? 'selected' : ''}>🍔 Burger</option>
+            <option value="Main Courses" ${item.category === 'Main Courses' ? 'selected' : ''}>🍕 Pizza</option>
+            <option value="Desserts" ${item.category === 'Desserts' ? 'selected' : ''}>🍧 Drinks & Desserts</option>
+            <option value="Drinks" ${item.category === 'Drinks' ? 'selected' : ''}>🍟 Other</option>
+          </select>
+          <button class="btn-delete" onclick="deleteItem(${index})">🗑 Delete</button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function updateMenu(index, field, value) {
+      menu[index][field] = value;
+    }
+
+    function deleteItem(index) {
+      if (confirm('Are you sure you want to delete this item?')) {
+        menu.splice(index, 1);
+        renderMenu();
+      }
+    }
+
+    function addNewItem() {
+      const name = document.getElementById('newName').value.trim();
+      const description = document.getElementById('newDescription').value.trim();
+      const price = parseFloat(document.getElementById('newPrice').value.trim());
+      const image = document.getElementById('newImage').value.trim();
+      const category = document.getElementById('newCategory').value;
+
+      if (!name || !description || isNaN(price) || !image || !category) {
+        alert('Please fill out all fields correctly.');
+        return;
+      }
+
+      menu.push({
+        id: Date.now(),
+        name,
+        description,
+        price,
+        image,
+        category
+      });
+
+      document.getElementById('newName').value = '';
+      document.getElementById('newDescription').value = '';
+      document.getElementById('newPrice').value = '';
+      document.getElementById('newImage').value = '';
+      document.getElementById('newCategory').value = '';
+      document.getElementById('newImagePreview').style.display = 'none';
+
+      renderMenu();
+    }
+
+    async function saveMenu() {
+      try {
+        const res = await fetch('/api/update-menu', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(menu),
+        });
+        const data = await res.json();
+        document.getElementById('saveMsg').innerText = data.message || 'Saved!';
+        setTimeout(() => document.getElementById('saveMsg').innerText = '', 3000);
+      } catch (e) {
+        alert('Failed to save menu.');
+        console.error(e);
+      }
+    }
+
+    function previewNewImage() {
+      const url = document.getElementById('newImage').value.trim();
+      const img = document.getElementById('newImagePreview');
+      if (url) {
+        img.src = url;
+        img.style.display = 'block';
+      } else {
+        img.style.display = 'none';
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return '';
+      return text.replace(/&/g, '&amp;')
+                 .replace(/</g, '&lt;')
+                 .replace(/>/g, '&gt;')
+                 .replace(/"/g, '&quot;')
+                 .replace(/'/g, '&#039;');
+    }
+  </script>
+</body>
+</html>
