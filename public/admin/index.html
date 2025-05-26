@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Admin Panel - Laziza Pizza</title>
+  <style>
+    :root {
+      --primary: #ffbf00;
+      --primary-dark: #e6aa00;
+      --bg-dark: #1c1c1c;
+      --bg-light: #2a2a2a;
+      --text-light: #f0f0f0;
+      --border: #333;
+    }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-light);
+      margin: 0;
+      padding: 20px;
+    }
+    header {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--primary);
+    }
+    header img {
+      height: 50px;
+      width: 50px;
+      object-fit: contain;
+    }
+    header h1 {
+      color: var(--primary);
+      margin: 0;
+    }
+    .controls, .stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    input, select {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid var(--border);
+      background: var(--bg-light);
+      color: var(--text-light);
+    }
+    .stat-card {
+      background: var(--bg-light);
+      padding: 15px;
+      border-radius: 8px;
+      flex: 1;
+      min-width: 150px;
+      cursor: pointer;
+    }
+    .stat-card h3 {
+      margin: 0 0 10px 0;
+      color: var(--primary);
+      font-size: 0.9rem;
+    }
+    .stat-card p {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    .orders-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 20px;
+    }
+    .order-card {
+      background: var(--bg-light);
+      border-radius: 8px;
+      padding: 15px;
+      border-left: 4px solid var(--primary);
+    }
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 10px;
+      margin-bottom: 10px;
+    }
+    .order-id { color: var(--primary); font-weight: bold; }
+    .order-time { color: #aaa; font-size: 0.8rem; }
+    .order-item {
+      display: flex; justify-content: space-between;
+      padding: 5px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: bold;
+    }
+    .status-pending { background: #ff9800; color: #000; }
+    .status-preparing { background: #2196F3; color: #fff; }
+    .status-completed { background: #4CAF50; color: #fff; }
+    .save-btn {
+      background: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      margin-top: 20px;
+      cursor: pointer;
+    }
+    .tab-btn.active { background: var(--primary-dark); color: black; font-weight: bold; }
+    .tab-btn { margin-right: 8px; padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; }
+    .enable-sound-btn {
+      background: #2980b9; color: white;
+      padding: 10px 16px; border-radius: 8px;
+      font-weight: bold; margin-bottom: 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <img src="https://files.catbox.moe/h3j21d.png" alt="Laziza Pizza Logo">
+    <h1>Admin Panel - Laziza Pizza</h1>
+  </header>
+
+  <button id="enableSoundBtn" class="enable-sound-btn">🔊 Tap to Enable Sound</button>
+
+  <div class="controls"><div style="margin-left:auto;"><button class="save-btn" onclick="saveChanges()">💾 Save All Changes</button></div>
+    <div><label>Date: <input type="date" id="orderDate"></label></div>
+    <div><input type="text" id="searchInput" placeholder="Search orders..."></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-card" onclick="showTab('all')"><h3>Total Orders</h3><p id="totalOrders">0</p></div>
+    <div class="stat-card" onclick="showTab('pending')"><h3>Pending</h3><p id="pendingOrders">0</p></div>
+    <div class="stat-card" onclick="showTab('preparing')"><h3>Preparing</h3><p id="preparingOrders">0</p></div>
+    <div class="stat-card" onclick="showTab('completed')"><h3>Completed</h3><p id="completedOrders">0</p></div>
+  </div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="showTab('all')">All</button>
+    <button class="tab-btn" onclick="showTab('pending')">Pending</button>
+    <button class="tab-btn" onclick="showTab('preparing')">Preparing</button>
+    <button class="tab-btn" onclick="showTab('completed')">Completed</button>
+  </div>
+
+  <div class="orders-container" id="ordersContainer"></div>
+  
+
+  <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+  <script>
+    let orders = [];
+    let currentDate = new Date().toISOString().split('T')[0];
+    let currentTab = 'all';
+    const notifSound = new Audio("https://cdn.glitch.global/9645b05c-396e-4189-b5ee-362d96b8d077/Untitled%20design%20(1).mp3?v=1748235467452");
+    let soundEnabled = false;
+
+    document.getElementById("enableSoundBtn").addEventListener("click", () => {
+      notifSound.play().then(() => {
+        notifSound.pause(); notifSound.currentTime = 0;
+        soundEnabled = true;
+        document.getElementById("enableSoundBtn").style.display = "none";
+        alert("✅ Sound notifications enabled.");
+      }).catch(() => {
+        alert("❌ Tap again to enable sound.");
+      });
+    });
+
+    document.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("orderDate").value = currentDate;
+      document.getElementById("orderDate").addEventListener("change", e => {
+        currentDate = e.target.value;
+        loadOrders(currentDate);
+      });
+      document.getElementById("searchInput").addEventListener("input", e => {
+        filterOrders(e.target.value, currentTab);
+      });
+      loadOrders(currentDate);
+    });
+
+    const socket = io();
+    socket.emit("admin-panel");
+    socket.on("new-order", data => {
+      if (soundEnabled) notifSound.play().catch(() => {});
+      alert("🔔 New order: " + data.orderId);
+      loadOrders(currentDate);
+    });
+
+    function showTab(tab) {
+      currentTab = tab;
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelector(`.tab-btn[onclick="showTab('${tab}')"]`).classList.add('active');
+      filterOrders(document.getElementById("searchInput").value, tab);
+    }
+
+    function loadOrders(date) {
+      fetch(`/api/orders?date=${date}`)
+        .then(res => res.json())
+        .then(data => {
+          orders = data.reverse(), data = orders;
+          updateStats();
+          filterOrders(document.getElementById("searchInput").value, currentTab);
+        }).catch(() => {
+          document.getElementById("ordersContainer").innerHTML = "<p style='text-align:center;color:#888'>No orders found.</p>";
+        });
+    }
+
+    function updateStats() {
+      document.getElementById("totalOrders").textContent = orders.length;
+      document.getElementById("pendingOrders").textContent = orders.filter(o => o.status === 'Pending').length;
+      document.getElementById("preparingOrders").textContent = orders.filter(o => o.status === 'Preparing').length;
+      document.getElementById("completedOrders").textContent = orders.filter(o => o.status === 'Completed').length;
+    }
+
+    function updateOrderStatus(id, status) {
+      const index = orders.findIndex(o => o.orderId === id);
+      if (index !== -1) orders[index].status = status;
+      updateStats();
+    }
+
+    function filterOrders(search, filter = 'all') {
+      let result = [...orders];
+      if (filter !== 'all') result = result.filter(o => o.status === capitalize(filter));
+      if (search) {
+        const term = search.toLowerCase();
+        result = result.filter(o =>
+          (o.orderId && o.orderId.toLowerCase().includes(term)) ||
+          (o.customerName && o.customerName.toLowerCase().includes(term)) ||
+          (o.tableNumber && o.tableNumber.toLowerCase().includes(term))
+        );
+      }
+      renderOrders(result);
+    }
+
+    function renderOrders(list) {
+      const container = document.getElementById("ordersContainer");
+      container.innerHTML = "";
+      if (list.length === 0) {
+        container.innerHTML = "<p style='text-align:center;color:#888'>No matching orders found.</p>";
+        return;
+      }
+      list.forEach(order => {
+        const badge = `status-${order.status.toLowerCase()}`;
+        container.innerHTML += `
+          <div class="order-card">
+            <div class="order-header">
+              <span class="order-id">${order.orderId}</span>
+              <span class="order-time">${new Date(order.timestamp).toLocaleTimeString()}</span>
+            </div>
+            <div><strong>Name -${order.customerName || 'Customer'}</strong> </br>Table No. - ${order.tableNumber || 'Takeaway'}</div>
+            <div class="order-items">
+              ${order.items.map(i => `
+                <div class="order-item">
+                  <span>${i.name} x ${i.quantity}</span>
+                  <span>₹${i.price * i.quantity}</span>
+                </div>`).join('')}
+            </div>
+            ${order.specialRequest ? `<div style="padding:8px 0;color:#f9c74f;"><em>Special request: ${order.specialRequest}</em></div>` : ''}<div style="text-align:right;font-weight:bold;">Total: ₹${order.total}</div>
+            <div class="status-control" style="margin-top:10px;">
+              <span class="status-badge ${badge}">${order.status}</span>
+              <select onchange="updateOrderStatus('${order.orderId}', this.value)">
+                <option value="Pending" ${order.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                <option value="Preparing" ${order.status === 'Preparing' ? 'selected' : ''}>Preparing</option>
+                <option value="Completed" ${order.status === 'Completed' ? 'selected' : ''}>Completed</option>
+              </select>
+            </div>
+          </div>
+        `;
+      });
+    }
+
+    function saveChanges() {
+      fetch('/api/save-orders', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ date: currentDate, orders })
+      }).then(res => res.json())
+        .then(data => alert("✅ Changes saved."))
+        .catch(() => alert("❌ Failed to save changes."));
+    }
+
+    function capitalize(str) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+  </script>
+</body>
+</html>
